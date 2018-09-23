@@ -1,0 +1,60 @@
+5.Запросы
+////////////
+БД MySQL
+------------------------------
+5.1 Запрос на выбор всех товаров с указанием их категории и бренда:
+
+SELECT `products`.*, `categories`.`name` AS `category`, `brands`.`name` AS `brand`
+FROM `products`
+INNER JOIN `categories` ON `products`.`category_id` = `categories`.`id`
+INNER JOIN `brands` ON `products`.`brand_id` = `brands`.`id`;
+
+5.2 Запрос на выбор всех товаров, бренд которых начинается на букву "A":
+
+SELECT * FROM `products` WHERE `brand_id` IN (
+SELECT `id` FROM `brands` WHERE `brands`.`name` LIKE 'A%');
+
+5.3 Запрос на вывод списка категорий и число товаров в каждой (используем подзапросы и функцию COUNT(), использовать группировку нельзя):
+
+SELECT `categories`.`name` AS `category`, (
+SELECT COUNT(*) FROM `products`
+WHERE `products`.`category_id` = `categories`.`id`) AS `products_count`
+FROM `categories`;
+
+5.4* Запрос на выбор для каждой категории списка брендов товаров, входящих в нее:
+
+SELECT `categories`.*, GROUP_CONCAT(DISTINCT `brands`.`name` SEPARATOR ', ') AS `all_brands`
+FROM `categories`
+LEFT JOIN `products` ON `products`.`category_id` = `categories`.`id`
+LEFT JOIN `brands` ON `products`.`brand_id` = `brands`.`id`
+GROUP BY `categories`.`id`;
+
+////////////
+БД Postgres
+------------------------------
+5.1 Запрос на выбор всех товаров с указанием их категории и бренда:
+
+SELECT "products".*, "categories"."name" AS "category", "brands"."name" AS "brand"
+FROM "products"
+INNER JOIN "categories" ON "products"."category_id" = "categories"."id"
+INNER JOIN "brands" ON "products"."brand_id" = "brands"."id";
+
+5.2 Запрос на выбор всех товаров, бренд которых начинается на букву "A":
+
+SELECT * FROM "products" WHERE "brand_id" IN (
+SELECT "id" FROM "brands" WHERE "brands"."name" LIKE 'A%');
+
+5.3 Запрос на вывод списка категорий и число товаров в каждой (используем подзапросы и функцию COUNT(), использовать группировку нельзя):
+
+SELECT "categories"."name" AS "category", (
+SELECT COUNT(*) FROM "products"
+WHERE "products"."category_id" = "categories"."id") AS "products_count"
+FROM "categories";
+
+5.4* Запрос на выбор для каждой категории списка брендов товаров, входящих в нее:
+
+SELECT "categories".*, STRING_AGG(DISTINCT "brands"."name", ', ') AS "all_brands"
+FROM "categories"
+LEFT JOIN "products" ON "products"."category_id" = "categories"."id"
+LEFT JOIN "brands" ON "products"."brand_id" = "brands"."id"
+GROUP BY "categories"."id";

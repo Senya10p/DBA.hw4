@@ -1,0 +1,57 @@
+1. Продолжим работу с таблицей товаров, которую сделали на предыдущем уроке.
+2. Создаём таблицу категорий и таблицу производителей:
+CREATE TABLE `categories` (
+  `id`    SERIAL,
+  `name`  VARCHAR(100),
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `brands` (
+  `id`    SERIAL,
+  `name` VARCHAR(100),
+  PRIMARY KEY (`id`)
+);
+
+Заполняем таблицу с категориями:
+INSERT INTO `categories` (`name`) VALUES ('Продукты');
+INSERT INTO `categories` (`name`) VALUES ('Одежда');
+INSERT INTO `categories` (`name`) VALUES ('Телефоны');
+INSERT INTO `categories` (`name`) VALUES ('Бытовая техника');
+
+Заполняем таблицу с брендами:
+INSERT INTO `brands` (`name`) VALUES ('Apple');
+INSERT INTO `brands` (`name`) VALUES ('Samsung');
+INSERT INTO `brands` (`name`) VALUES ('Adidas');
+INSERT INTO `brands` (`name`) VALUES ('Puma');
+INSERT INTO `brands` (`name`) VALUES ('Bosh');
+INSERT INTO `brands` (`name`) VALUES ('Nokia');
+INSERT INTO `brands` (`name`) VALUES ('Askona');
+INSERT INTO `brands` (`name`) VALUES ('Ikea');
+INSERT INTO `brands` (`name`) VALUES ('Aquaton');
+INSERT INTO `brands` (`name`) VALUES ('Xiaomi');
+
+3. Добавляем в таблицу товаров(products) поля для связи с категориями и брендами:
+
+ALTER TABLE `products` ADD `category_id` BIGINT UNSIGNED NULL DEFAULT NULL;
+
+ALTER TABLE `products` ADD `brand_id` BIGINT UNSIGNED NULL DEFAULT NULL;
+
+Заполняем в таблице products столбцы category_id и brand_id.
+
+Добавляем индексы:
+CREATE INDEX `category_id_index` ON `products` (`category_id`);
+
+CREATE INDEX `brand_id_index` ON `products` (`brand_id`);
+
+4. Создаём внешние ключи для этих связей и тестируем их.
+
+ALTER TABLE `products` ADD CONSTRAINT `category`
+FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
+ALTER TABLE `products` ADD CONSTRAINT `brand`
+FOREIGN KEY (`brand_id`) REFERENCES `brands`(`id`)
+ON DELETE RESTRICT
+ON UPDATE CASCADE;
+
